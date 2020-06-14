@@ -1,0 +1,432 @@
+swagger: "2.0"
+# Cabecera del documento.
+info:
+  title: Delilah Restó
+  description: Tercer proyecto de la carrera DWFS de Acamica
+  version: 1.0.0
+# Fin cabecera del documento.
+
+#asi todas las rutas quedan https://DelilahResto.com/v2/users
+host: "DelilahResto.com"
+basePath: "/v2"
+
+#tags son los temas sobre los que hago las rutas
+tags:
+- name: "Users"
+  description: "Operations avalible on users"
+- name: "Products"
+  description: "Operations avalible on products"
+- name: "Orders"
+  description: "Operations avalible on orders"
+  
+schemes:
+- "https"
+- "http"
+
+#define the MIME types supported by the API (consumes only operations with a request body, like post) If written in an operation level this will be overriden
+consumes:
+  - "application/json"
+  - "application/xml"
+produces:
+  - "application/xml"
+  - "application/json"
+
+#rutas
+paths:
+  /user/register:
+    post:
+      #con tags identifico dentro de que categoria de tags de linea 10 escribo estas rutas
+      tags:
+      - "Users"
+      summary: "Add a new user to the restó"
+      description: "The new user complets the required information and is then added to the data base "
+      #operationId: "registerUser" QUE ES
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "user object that needs to be added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "User correctly added to database"
+        403:
+          description: "Username already exists, please pick another"
+  /user/logIn:
+    get:
+      tags:
+      - "Users"
+      summary: "Logs user into the system"
+      description: "Logs user into the system"
+      operationId: "loginUser"
+      parameters:
+      - name: "username"
+        in: "body"
+        description: "The user name for login"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        404:
+          description: "Invalid username/password supplied"
+  /user/delete/{username}:
+    delete:
+      tags:
+      - "Users"
+      summary: "The user deletes his account"
+      description: "This can only be done by the logged in user."
+      operationId: "deleteUser"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "The name that needs to be deleted"
+        required: true
+        type: "string"
+      responses:
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /products/add:
+    post:
+      tags:
+      - "Products"
+      summary: "Adds a product to database"
+      description: "This can only be done by the admin"
+      operationId: "addProduct"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "product object that needs to be added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        201:
+          description: "Product correctly added to database"
+        400:
+          description: "Error validating input data"
+        409:
+          description: "Product already exists, please pick another"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+        - bearerAdminAuth: []
+  /products/delete/{Id}:
+    delete:
+      tags:
+      - "Products"
+      summary: "Delets a product from database"
+      description: "This can only be done by the admin"
+      operationId: "deleteProduct"
+      parameters:
+      - name: "Token"
+        description: "Authorization: Bearer [token]"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "Id"
+        in: "path"
+        description: "Product id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Success"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+        - bearerAdminAuth: []
+  /products/modify/{Id}:
+    put:
+      tags:
+      - "Products"
+      summary: "Update an existing pet"
+      description: ""
+      operationId: "updatePet"
+      parameters:
+      - name: "Token"
+        description: "Authorization: Bearer [token]"
+        in: "header"
+        required: true
+        type: "string"
+      - name: "Id"
+        in: "path"
+        description: "Product id to modify"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "body"
+        in: "body"
+        description: "Product object that is going to modify the current one"
+        required: true
+        schema:
+          $ref: "#/definitions/Product"
+      responses:
+        200:
+          description: "Success"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+        - bearerAdminAuth: []
+  /orders:
+    get:
+      tags:
+      - "Orders"
+      summary: "Returns all orders. This can only be done by a admin"
+      description: "Returns a tabla with all order related information"
+      operationId: "getOrders"
+      parameters: 
+      - name: "Token"
+        description: "Authorization: Bearer [token]"
+        in: "header"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+       - bearerAdminAuth: []
+  /orders/add:
+    post:
+      tags:
+      - "Orders"
+      summary: "Add a new order"
+      description: "Making an order. This can only be done by a user"
+      operationId: "postOrder"
+      parameters:
+      - name: "Token"
+        description: "Authorization: Bearer [token]"
+        in: "header"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Order object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      responses:
+        200:
+          description: "Order created successfully"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedAdminError'
+      security:
+       - bearerUserAuth: []
+  /orders/show/{Id}:
+    get:
+      tags:
+      - "Orders"
+      summary: "Find purchase order by ID, to show details. This can only be done by a user"
+      description: "A user can get an order"
+      operationId: "getOrderById"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "ID of order that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Order"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedAdminError'
+      security:
+       - bearerUserAuth: []
+  /orders/modify/{Id}:  
+    put:
+      tags:
+      - "Orders"
+      summary: "Find purchase order by ID, to update"
+      description: "An administrator can update an order."
+      operationId: "putOrderById"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Order object that needs to be added to the store"
+        required: true
+        schema:
+          $ref: "#/definitions/Order"
+      - name: "Id"
+        in: "path"
+        description: "ID of order that needs to be fetched"
+        required: true
+        type: "integer"
+        maximum: 10.0
+        minimum: 1.0
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Order"
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+       - bearerAdminAuth: []
+  /orders/delete/{Id}:  
+    delete:
+      tags:
+      - "Orders"
+      summary: "Delete order by ID"
+      description: "An administrator can delete an order"
+      operationId: "updateOrderById"
+      parameters:
+      - name: "Id"
+        in: "path"
+        description: "ID of order that needs to be fetched"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        500:
+          description: "Internal Error"
+        403:
+          $ref: '#/responses/UnauthorizedUserError'
+      security:
+       - bearerAdminAuth: []
+
+definitions:
+  User:
+    type: "object"
+    properties:
+      Id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      Username:
+        type: "string"
+        example: VickyCalvo
+      First and last name:
+        type: "string"
+        example: Victoria Calvo
+      Email:
+        type: "string"
+        example: victoriacalvo97@hotmail.com
+      Phone:
+        type: "string"
+        example: 3468408136
+      Shipping adress:
+        type: "string"
+        example: De las acacias 139
+      Password:
+        type: "string"
+  Product:
+    type: "object"
+    properties:
+      Id:
+        type: "integer"
+        format: "int64"
+        example: 1
+      Descripción:
+        type: "string"
+        example: Dulce de leche
+      Stock:
+        type: "integer"
+        format: "int64"
+        example: 3
+      Price per unit:
+        type: "number"
+        example: 300
+  Order:
+    type: object
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 5
+      userId:
+        type: "integer"
+        format: "int64"
+        example: 1
+      paymentMethod:
+        type: "string"
+        enum: ['efectivo', 'debito', 'credito']
+        example: debito
+      price:
+        type: "integer"
+        example: 19.99
+      state:
+        type: "string"
+        enum: ["entregado", "enviando", "preparando", "confirmado", "nuevo"]
+        example: entregado
+      products:
+        type: "array"
+        items:
+          type: object
+          properties:
+            productId:
+              type: "integer"
+              example: 3
+            productCuantity:
+              type: "integer"
+              example: 2
+
+   
+securityDefinitions:
+#The name “Bearer authentication” can be understood as “give access to the bearer of this token.
+  bearerAdminAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+  bearerUserAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+ 
+#dentro de las responses de status hice referencia a estas formas de mostrar error   
+responses:
+  UnauthorizedAdminError:
+    description: Administrators are not allowed to make this request
+    headers:
+      Authorization:
+        description: Bearer [token]
+        type: string
+  UnauthorizedUserError:
+    description: Users are not allowed to make this request
+    headers:
+      Authorization:
+        description: Bearer [token]
+        type: string
+  UnauthorizedBothError:
+    description: Invalid Token
+    headers:
+      Authorization:
+        description: Bearer [token]
+        type: string
+    
