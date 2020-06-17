@@ -3,6 +3,9 @@ const JWT = require('jsonwebtoken');
 const JWTSign = 'SeCrEt2020.';
 const controller = {}; //guardo todas las funciones a exportar en este controlador
 
+const sequelize = require('../database/connection'); 
+
+
 
 let arrayUsuarios = [
     {
@@ -82,10 +85,6 @@ controller.deleteUser = (req, res) => {
     .then(() => res.status(200).json('User deleted successfully'))
     .catch(err => catchSQLError(res, err))
 }
-
-
-
-
 
 
 module.exports = controller; 

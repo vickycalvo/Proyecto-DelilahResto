@@ -1,6 +1,14 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize (`mysql://root:root@$localhost:8889/DelilahResto`); //user,password,host,port,db name
 
+
+sequelize = new Sequelize('DelilahResto', 'root', 'root', {
+  dialect: 'mysql',
+  host: 'localhost',
+  port: 8889
+});
+
+
+//reviso conección
 sequelize
   .authenticate()
   .then(function(err) {

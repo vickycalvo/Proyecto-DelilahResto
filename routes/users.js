@@ -14,4 +14,4 @@ router.delete('/delete/:id', controller.deleteUser); //agregar auth q esto solo 
 
 
 
-module.exports = router;
+module.exports = router; 
