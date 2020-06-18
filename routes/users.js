@@ -2,16 +2,17 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/users');
-const auth = require('../controllers/authorizations'); // .... tengo q completar este archivo
+const auth = require('../controllers/authorizations'); 
+const validations = require('../controllers/validations')
 
 
 // Routes
 
-router.post('/register', controller.registerUser);
-router.post('/login', controller.validateUserLogin);
-router.delete('/delete/:id', controller.deleteUser); //agregar auth q esto solo lo puede hacer el usuario
+router.post('/register',validations.requireDataRegister, controller.registerUser);
+router.post('/login', validations.requireDataLogin, controller.validateUserLogin);
+router.delete('/delete', auth.user, controller.deleteUser); //agregar auth q esto solo lo puede hacer el usuario
 
 
 
 
-module.exports = router; 
+module.exports = router;  

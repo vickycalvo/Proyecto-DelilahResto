@@ -8,21 +8,14 @@ const auth = {}; //guardo todas las funciones a exportar en este controlador
 
 /** Middlewares */
 
-//decodificar token
-function jwtDecode(token) {
-    const decodificado = jwt.verify(token, secret)
-    return decodificado;
-}
-
-
 //error en autenticación 
 const catchAuthError = (res, err) => {
+    console.log(err)
     res.status(500).json({
         mensaje : "Ocurrio un error",
         error: err
    });
 };
-
 
 /** MIDDLWARES AUTORIZACIONES */
 
@@ -30,54 +23,77 @@ const catchAuthError = (res, err) => {
 auth.user = (req, res, next) => {
     try {
         const token = req.headers.authorization
-        const verifyToken = jwtDecode(token);
-        
-        if (verifyToken) {
-            if (verifyToken.type === 'user'){
-                //TENGO Q PASARLE ALGO ACA???
+
+        const tokenVerified = JWT.verify(token, JWTSign, function(err, decoded) { 
+          if (err) {
+            return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
+          } else {
+              //decoded contine la información almacenada en el token verificado
+            if (decoded.isAdmin === 0){
+                req.locals = {
+                    ...req.locals,
+                    decoded
+                }
                 next();
             }
+            //si no es usuario no puede eliminar
             else{
                 res.status(403).json({ error: 'User is not allowed.' })
-            }
-        }
-    }
+            }}
+        });
+     }
     catch {(err) => catchAuthError(res, err)} 
 };
 
 //---autorizo solo a admin---
-auth.admin = (req, res, next) => {
+auth.admin = (req, res, next) => {   
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        const verifyToken = jwtDecode(token);
-        
-        if (verifyToken) {
-            if (verifyToken.type === 'admin'){
+        const token = req.headers.authorization
+
+        const tokenVerified = JWT.verify(token, JWTSign, function(err, decoded) { 
+          if (err) {
+            return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
+          } else {
+              //decoded contine la información almacenada en el token verificado
+            if (decoded.isAdmin === 1){
+                req.locals = {
+                    ...req.locals,
+                    decoded
+                }
                 next();
             }
+            //si no es administrador no puede eliminar
             else{
                 res.status(403).json({ error: 'User is not allowed.' })
-            }
-        }
-    }
+            }}
+        });
+     }
     catch {(err) => catchAuthError(res, err)} 
 };
 
 //--- autorizo a ambos ---
 auth.both = (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        const verifyToken = jwtDecode(token);
-        
-        if (verifyToken) {
-            if (verifyToken.type === 'admin' || verifyToken.type === 'user'){
+        const token = req.headers.authorization
+
+        const tokenVerified = JWT.verify(token, JWTSign, function(err, decoded) { 
+          if (err) {
+            return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
+          } else {
+              //decoded contine la información almacenada en el token verificado
+            if (decoded.isAdmin === 0 || decoded.isAdmin === 1){
+                req.locals = {
+                    ...req.locals,
+                    decoded
+                }
                 next();
             }
+            //si no es usuario no puede eliminar
             else{
-                res.status(403).json({ error: 'User is not allowed.' })
-            }
-        }
-    }
+                res.status(403).json({error})
+            }}
+        });
+     }
     catch {(err) => catchAuthError(res, err)} 
 };
 

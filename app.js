@@ -28,3 +28,4 @@ app.use('/products', productsRoutes);
 app.listen(3000, () => {
     console.log((new Date()).toISOString() + " - Server Iniciado")
 });
+
