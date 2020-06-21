@@ -12,7 +12,7 @@ const auth = {}; //guardo todas las funciones a exportar en este controlador
 const catchAuthError = (res, err) => {
     console.log(err)
     res.status(500).json({
-        mensaje : "Ocurrio un error",
+        mensaje : "An error ocurred",
         error: err
    });
 };
@@ -64,7 +64,7 @@ auth.admin = (req, res, next) => {
             }
             //si no es administrador no puede eliminar
             else{
-                res.status(403).json({ error: 'User is not allowed.' })
+                res.status(403).json({ error: 'Do not have admin permissions' })
             }}
         });
      }
@@ -77,7 +77,9 @@ auth.both = (req, res, next) => {
         const token = req.headers.authorization
 
         const tokenVerified = JWT.verify(token, JWTSign, function(err, decoded) { 
+        console.log(tokenVerified)
           if (err) {
+            console.log(err)
             return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });    
           } else {
               //decoded contine la información almacenada en el token verificado

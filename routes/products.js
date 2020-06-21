@@ -2,18 +2,16 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/products');
 const auth = require('../controllers/authorizations');
-
+const validations = require('../controllers/validations')
 
 
 // Routes
 
-//tanto usuario como administrador pueden mostrar los productos
+
 router.get('/', controller.showProducts);
-router.get('/:Id', controller.showProductById)
-//Agregar validación de que esto solo lo hace el administrador desde archivo authorization
-router.post('/', controller.createProduct); 
-router.delete('/:id', controller.deleteProduct);
-router.put('/:id', controller.modifyProduct)
+router.post('/',auth.admin, validations.requireDataCreateProduct, controller.createProduct); 
+router.patch('/:id', auth.admin, controller.deactivateProduct);
+router.put('/:id', auth.admin, controller.modifyProduct)
 
 
 

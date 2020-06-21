@@ -8,8 +8,8 @@ const validations = require('../controllers/validations')
 
 // Routes
 
-router.post('/register',validations.requireDataRegister, controller.registerUser);
-router.post('/login', validations.requireDataLogin, controller.validateUserLogin);
+router.post('/register',validations.requireDataUserRegister, controller.registerUser);
+router.post('/login', validations.requireDataUserLogin, controller.validateUserLogin);
 router.delete('/delete', auth.user, controller.deleteUser); //agregar auth q esto solo lo puede hacer el usuario
 
 
