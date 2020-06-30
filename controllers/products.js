@@ -21,7 +21,28 @@ const catchSQLError = (res, err) => {
 //---creo un producto---
 
 controller.showProducts = (req, res) => {
-
+    database.query( 
+        'SELECT * FROM products',
+         {
+            type: sequelize.QueryTypes.SELECT
+        }
+    ).then(rta => {
+        //valido que existe el producto
+        if (rta.length === 0){
+            res.status(404).json({
+                response: {
+                    message: 'There are no products',
+                }
+            });
+        }else{
+            res.status(200).json({
+            response: {
+                    message: 'Prodcuts shown succesfully',
+                    products: rta
+            }
+            });
+        }
+    }).catch(error => catchSQLError(res, error))
 }
 
 
@@ -85,7 +106,6 @@ controller.deactivateProduct = (req, res) => {
             res.status(404).json({
                 response: {
                     message: 'Product does not existes',
-                    user: newProduct
                 }
             });
         }else{

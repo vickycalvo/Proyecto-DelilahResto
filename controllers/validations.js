@@ -132,7 +132,17 @@ validations.requireDataCreateOrder = (req, res, next) => {
 
 }
 
-validations.requireDataModifyOrderStatus = (req, res, next) => {}
+validations.requireDataModifyOrderStatus = (req, res, next) => {
+    const state = req.body.state;
+    if (typeof(state) !== "string") {
+        res.status(404).json({
+            mensaje: 'There was a problem with the state'
+        });
+    }
+    else{
+        next()
+    }
+}
 
 
 

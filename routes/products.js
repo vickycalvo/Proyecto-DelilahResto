@@ -8,7 +8,7 @@ const validations = require('../controllers/validations')
 // Routes
 
 
-router.get('/', controller.showProducts);
+router.get('/', auth.user, controller.showProducts);
 router.post('/',auth.admin, validations.requireDataCreateProduct, controller.createProduct); 
 router.patch('/:id', auth.admin, controller.deactivateProduct);
 router.put('/:id', auth.admin, controller.modifyProduct)

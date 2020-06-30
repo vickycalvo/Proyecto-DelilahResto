@@ -8,8 +8,7 @@ const validations = require('../controllers/validations')
 // Routes
 
 router.get('/',auth.admin, controller.showAllOrders); 
-router.get('/',auth.admin, controller.showAllOrders); 
-router.post('/',auth.admin, validations.requireDataCreateOrder, controller.createOrder); 
+router.post('/',auth.admin, validations.requireDataCreateOrder, controller.createOrder); //esto va con auth us
 router.patch('/:id', auth.admin, validations.requireDataModifyOrderStatus, controller.modifyOrderStatus);
 
 

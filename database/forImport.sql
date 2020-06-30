@@ -74,23 +74,30 @@ VALUE
 INSERT INTO `products`
     (`id`, `name`,`description`,`price`,`imageSrc`, `isActive`)
 VALUE
-    (1, 'dulce de leche','marca la serenisima estilo colonial', 100 ,'www.hola.com', 1),
-    (2, 'queso', 'marca la serenisima',300,'www.hola.com', 1)
+    (1, 'hamburguesa','completa', 300 ,'www.google.com', 1),
+    (2, 'gaseosa', 'coca cola 1.5 litros',150,'www.hola.com', 1),
+    (3, 'pancho', 'con ketchup',50,'www.hola.com', 1)
+
 
 
 
 #CARGA TABLA ORDERS
 INSERT INTO `orders`
-    (`id`, `username`,`state`,`timeCreated`,`description`, `paymentMethod`, `paymentValue`, `updatedAt`)
+    (`id`, `username`,`state`,`timeCreated`,`description`, `paymentMethod`, `paymentValue`)
 VALUE
-    (1, 'vicky','nuevo', "20:00:00" ,'3 hamburguesas', "efectivo", 1300, "20:00:00"),
-    (2, 'sofi','entreagado', "20:00:00",'3 pizzas', "tarjeta", 1300, "22:00:00")
+    (1, 'vicky','nuevo', "20:00:00" ,'3 hamburguesas - 2 panchos', "efectivo", 1000)
+    (2, 'santi','nuevo', "20:00:00",'5 gaseosas', "tarjeta", 750),
+    (3, 'sofi','nuevo', "20:00:00",'1 gaseosa- 1 hamburgesa - 1 pancho', "tarjeta", 500)
+
 
 
 #CARGA TABLA ORDERS_PRODUCTS
 INSERT INTO `orders_products`
     (`id`, `id_product`,`id_order`,`productPrice`,`productAmount`, `subtotal`)
 VALUE
-    (1, 1, 1, 100, 1, 100),
-    (2, 1, 3, 200, 2, 400),
-    (3, 2, 1, 100, 3, 300)
+    (1, 1, 1, 300, 3, 900),
+    (2, 3, 1, 50, 2, 100),
+    (3, 2, 2, 150, 5, 750),
+    (4, 2, 3, 150, 1, 150),
+    (5, 1, 3, 300, 1, 300),
+    (6, 3, 3, 50, 21, 50)
