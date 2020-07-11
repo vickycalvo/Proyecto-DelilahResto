@@ -2,7 +2,8 @@
 const controller = {}; //guardo todas las funciones a exportar en este controlador
 
 const database = require('../database/connection'); 
-const auth = require('../controllers/authorizations'); 
+var moment = require('moment')
+
 /** MIDDLWARES */
 
 
@@ -18,45 +19,56 @@ const catchSQLError = (res, err) => {
 
 /** FUNCIONES */
 
+
+
+let productInfo= [];
+var orderDescription = "";
+var totalToPay = 0
 //--- creo un pedido ---
 controller.createOrder = (req, res) => {
-    const newOrder = req.body
 
+    let productsArray = req.body.products //me guarde array con id de productos a incluir en la order y la cantidad de cada uno
+    
+    for (let i = 0; i < productsArray.length; i++) {
 
-
-    database.query( 
-        'SELECT * FROM orders where id=:id',
+        const productId = productsArray[i].id
+        let product= {};
+        
+        database.query('SELECT * FROM products where id=:id',
          {
             type: sequelize.QueryTypes.SELECT,
             replacements : {
-                id: newOrder.id
+                id: productId
             }
+        }).then (rta => {
+            product.id = productId;
+            product.name = rta[0].name;
+            product.price = rta[0].price
+
+            productInfo.push(product) //guardo en un array la info de cada producto contenida en product()
+
+                const productName = productInfo[i].name
+                const productAmount = productsArray[i].productAmount
+                const nameAndAmount = productAmount + " " + productName        
+
+                orderDescription += nameAndAmount + " - "
+                totalToPay += productsArray[i].productAmount * productInfo[i].price
+        })
+    }
+
+    database.query(
+        `INSERT INTO orders  (id_user, state, createdAt, description, paymentMethod, paymentValue, updatedAt)
+        VALUES (:id_user, :state, :createdAt, :description, :paymentMethod, :paymentValue, :updatedAt)`,
+        {
+            replacements:{id_user: req.body.id_user, state: req.body.state,createdAt: req.body.createdAt,description: orderDescription,paymentMethod: req.body.paymentMethod,paymentValue: totalToPay,updatedAt: req.body.updatedAt}
         }
-    ).then(response => {
-        //valido que no exista ya ese username
-        if (response.length !==0){
-            res.status(401).json({
-                response: {
-                    message: 'Order already existes',
-                }
-            });
-        }else{
-            //no incluye el updatedAt pq aca estoy creando una nueva orden de cero
-            database.query(
-                `INSERT INTO orders  (id, username, state, timeCreated, description, paymentMethod, paymentValue)
-                VALUES (:id, :username, :state, :timeCreated, :description, :paymentMethod, :paymentValue)`,
-                {
-                    replacements: newOrder
-                }
-            ).then (rta => {
-                res.status(201).json({
-                    response: {
-                        message: 'Order created successfully:',
-                    }
-                });
-            }).catch(err => catchSQLError(res, err))
-        }
-    }).catch(error => catchSQLError(res, error))
+    ).then (rta => {
+        res.status(201).json({
+            response: {
+                message: 'Order created successfully:',
+            }
+        });
+    }).catch(err => catchSQLError(res, err))
 }
 
 
@@ -65,6 +77,7 @@ controller.createOrder = (req, res) => {
 controller.modifyOrderStatus = (req, res) => {
     const id = req.params.id
     const newState = req.body.state
+    const updatedAt = moment().format('YYYY-MM-DD hh:mm:ss')
 
     database.query( 
         'SELECT * FROM orders where id=:id',
@@ -86,9 +99,9 @@ controller.modifyOrderStatus = (req, res) => {
             const idOrder= response[0].id //me guardo el id del producto a modificar
            try{
                 database.query(
-                    'UPDATE `orders` SET state = :state where id = :idOrd',
+                    'UPDATE `orders` SET state = :state, updatedAt = :updatedAt where id = :idOrd',
                     {
-                        replacements: { state: newState, idOrd: idOrder}
+                        replacements: { state: newState, updatedAt: updatedAt, idOrd: idOrder}
                     }
                 ).then (rta => {
                     console.log(rta)
@@ -99,7 +112,7 @@ controller.modifyOrderStatus = (req, res) => {
                     });
                 }).catch(err => catchSQLError(res, err))
             }
-            catch{console.log("la puta madre")}
+            catch{console.log("not possible to update the state")}
         }
     }).catch(error => catchSQLError(res, error))
 }
@@ -114,15 +127,6 @@ controller.showAllOrders = (req, res) => {
             type: sequelize.QueryTypes.SELECT
         }
     ).then(rta => {
-        //valido que existe el producto
-        if (rta.length === 0){
-            res.status(404).json({
-                response: {
-                    message: 'There are no orders',
-                }
-            });
-        }else{
-            console.log(rta)
             res.status(200).json({
             response: {
                     message: 'Orders shown succesfully',
@@ -130,15 +134,33 @@ controller.showAllOrders = (req, res) => {
             }
             });
         }
-    }).catch(error => catchSQLError(res, error))
+    ).catch(error => catchSQLError(res, error))
+
 
 }
-//--- ver todos los pedidos de 1 solo usuario solo ese usuario ---
 
+
+//--- mostrar sus pedidos a un usuario
 controller.showUserOrders = (req, res) => {
-
-    
+   
+    database.query( 
+        'SELECT * FROM orders where id_user = :idUser',
+         {  
+            type: sequelize.QueryTypes.SELECT,
+            replacements: { idUser: req.locals.decoded.idUser}
+        }
+    ).then(rta => {
+            res.status(200).json({
+            response: {
+                    message: 'Orders shown succesfully',
+                    orders: rta
+            }
+            });
+        }
+    ).catch(error => catchSQLError(res, error))
 
 }
 
 module.exports = controller;
+
+

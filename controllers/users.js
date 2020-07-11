@@ -42,13 +42,12 @@ controller.registerUser = (req, res) => {
             res.status(401).json({
                 response: {
                     message: 'User already existes',
-                    user: newUser
                 }
             });
         }else{
             database.query(
-                `INSERT INTO users (username,password,fullName,email,phoneNumber)
-                VALUES (:username, :password, :fullName, :email, :phoneNumber)`,
+                `INSERT INTO users (username,password,fullName,email, adress,phoneNumber)
+                VALUES (:username, :password, :fullName, :email,:adress, :phoneNumber)`,
                 {
                     replacements: newUser
                 }
@@ -81,9 +80,10 @@ controller.validateUserLogin = (req, res) => {
      ).then(response => {
          //si encontro uno en la tabla de datos, creo el token de inicio de sesión del usuario 
          if (response.length !==0){
+            const idUser= response[0].id //me guardo si es administrador o no 
             const isAdmin= response[0].isAdmin //me guardo si es administrador o no 
             const token = JWT.sign({
-                username : reqUser.username,
+                idUser : idUser,
                 isAdmin : isAdmin
             }, JWTSign);
             res.status(200).json({

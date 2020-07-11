@@ -18,7 +18,6 @@ const catchSQLError = (res, err) => {
 
 /** FUNCIONES */
 
-//---creo un producto---
 
 controller.showProducts = (req, res) => {
     database.query( 
@@ -27,25 +26,30 @@ controller.showProducts = (req, res) => {
             type: sequelize.QueryTypes.SELECT
         }
     ).then(rta => {
-        //valido que existe el producto
-        if (rta.length === 0){
-            res.status(404).json({
-                response: {
-                    message: 'There are no products',
-                }
-            });
-        }else{
             res.status(200).json({
             response: {
                     message: 'Prodcuts shown succesfully',
                     products: rta
             }
             });
-        }
     }).catch(error => catchSQLError(res, error))
 }
 
 
+controller.showSingleProduct = (req, res) => {
+    database.query( 
+        'SELECT * FROM products',
+         {
+            type: sequelize.QueryTypes.SELECT
+        }
+    ).then(rta => {
+            res.status(200).json({
+            response: {
+                    message: 'Prodcuts shown succesfully',
+            }
+            });
+    }).catch(error => catchSQLError(res, error))
+}
 
 controller.createProduct = (req, res) => {
     const newProduct = req.body
@@ -59,7 +63,7 @@ controller.createProduct = (req, res) => {
             }
         }
     ).then(response => {
-        //valido que no exista ya ese username
+        //valido que no exista ya ese
         if (response.length !==0){
             res.status(401).json({
                 response: {
@@ -141,16 +145,12 @@ controller.deactivateProduct = (req, res) => {
 
 
 controller.modifyProduct = (req, res) => {
-    const id = req.params.id
-    const changesInProduct = req.body
-
-
     database.query( 
         'SELECT * FROM products where id=:id',
          {
             type: sequelize.QueryTypes.SELECT,
             replacements : {
-                id: id
+                id: req.params.id
             }
         }
     ).then(response => {
@@ -165,9 +165,9 @@ controller.modifyProduct = (req, res) => {
         }else{
             const idProduct= response[0].id //me guardo el id del producto a modificar
             database.query(
-                'UPDATE `products` SET name = :name, description =:description, price=:price, imageSrc=:imageSrc where id = :idProd',
+                'UPDATE `products` SET ........ where id = :idProd',
                 {
-                    replacements: { ...req.body, idProd: idProduct}
+                    replacements: { lpm: req.body, idProd: idProduct}
                 }
             ).then (rta => {
                 console.log(rta)
