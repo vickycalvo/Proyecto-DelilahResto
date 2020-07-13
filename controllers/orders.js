@@ -118,11 +118,10 @@ controller.modifyOrderStatus = (req, res) => {
 }
 
 //--- ver todos los pedidos ---
-
 controller.showAllOrders = (req, res) => {
 
     database.query( 
-        'SELECT * FROM orders',
+        'SELECT o.state, o.updatedAt, o.id, o.description, o.paymentValue, o.paymentMethod, u.username, u.adress FROM `orders` as o JOIN `users` as u on u.id = o.id_user',
          {
             type: sequelize.QueryTypes.SELECT
         }
@@ -135,8 +134,6 @@ controller.showAllOrders = (req, res) => {
             });
         }
     ).catch(error => catchSQLError(res, error))
-
-
 }
 
 
@@ -160,6 +157,26 @@ controller.showUserOrders = (req, res) => {
     ).catch(error => catchSQLError(res, error))
 
 }
+
+
+controller.showDetailedOrder = (req, res) => {
+
+    database.query( 
+        'SELECT p.name, p.price, o.paymentValue, o.state, o.paymentMethod, u.adress, u.fullName, u.username, u.email, u.phoneNumber FROM `orders` as o JOIN `orders_products` as op on o.id = op.id_order JOIN `products`as p on p.id=op.id_product JOIN `users` as u on o.id_user = u.id',
+        {   
+         type: sequelize.QueryTypes.SELECT
+        }
+    ).then(rta => {
+            res.status(200).json({
+            response: {
+                    message: 'Orders shown succesfully',
+                    orders: rta
+            }
+            });
+        }
+    ).catch(error => catchSQLError(res, error))
+}
+
 
 module.exports = controller;
 

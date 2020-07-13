@@ -90,7 +90,7 @@ controller.validateUserLogin = (req, res) => {
                 token
             });
          }else{
-            res.status(404).json({
+            res.status(400).json({
                 mensaje: 'Username or password is incorrect'
             });
          }})
