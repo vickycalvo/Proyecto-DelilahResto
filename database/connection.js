@@ -1,12 +1,11 @@
 const Sequelize = require('sequelize');
+const data = require('../database/dataConnection')
 
-
-sequelize = new Sequelize('DelilahResto', 'root', 'root', {
-  dialect: 'mysql',
-  host: 'localhost',
-  port: 8889
+sequelize = new Sequelize(data.dbName, data.user, data.password, {
+  dialect: data.dialect,
+  host: data.host,
+  port: data.port
 });
-
 
 //reviso conección
 sequelize

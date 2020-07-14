@@ -7,8 +7,10 @@ This is an API REST built to manage a food store´s orders. It will allow you to
 # Set up
 1. Install a local server environment (XAMPP or MAMP are recommended) used to serve a MySQL
 2. Start the server (Apache with suggested enviorenments) and MySQL. Make sure that the port being used for MySQL is 8889
-3. Make sure you have a profile with both username and password 'root' in MySQL
+3. Make sure you have a profile with both username and password 'root' in MySQL.
+** if using a different port, username or root, you can change the predifined ones in file '../database/dataConnection'**
 4. Import (./database/dbForIMport.sql) containing all the SQL queries to create the database and create the needed tables. There are also queries to populate these tables. 
+
 
 
 # Server init

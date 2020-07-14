@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/products');
-const auth = require('../controllers/authorizations');
-const validations = require('../controllers/validations')
+const auth = require('../middlewares/authorizations');
+const validations = require('../middlewares/validations');
 
 
 // Routes
-
-
-router.get('/', auth.user, controller.showProducts);
+router.get('/', auth.both, controller.showProducts);
 router.post('/',auth.admin, validations.requireDataCreateProduct, controller.createProduct); 
-router.patch('/:id', auth.admin, controller.deactivateProduct);
-router.put('/:id', auth.admin, controller.modifyProduct)
-
-
-
+router.delete('/:id', auth.admin, controller.deactivateProduct);
+router.put('/:id', auth.admin, validations.requireDataModifyProduct, controller.modifyProduct)
 
 
 module.exports = router;

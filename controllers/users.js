@@ -2,10 +2,7 @@
 const JWT = require('jsonwebtoken');
 const JWTSign = 'SeCrEt2020.';
 const controller = {}; //guardo todas las funciones a exportar en este controlador
-
 const database = require('../database/connection'); 
-const auth = require('../controllers/authorizations'); 
-
 
 
 /** MIDDLWARES */
@@ -46,8 +43,8 @@ controller.registerUser = (req, res) => {
             });
         }else{
             database.query(
-                `INSERT INTO users (username,password,fullName,email, adress,phoneNumber)
-                VALUES (:username, :password, :fullName, :email,:adress, :phoneNumber)`,
+                `INSERT INTO users (username,password,fullName,email, address,phoneNumber)
+                VALUES (:username, :password, :fullName, :email,:address, :phoneNumber)`,
                 {
                     replacements: newUser
                 }
@@ -64,7 +61,7 @@ controller.registerUser = (req, res) => {
 }
 
  
-//----valido login usuario----
+//----login usuario----
 controller.validateUserLogin = (req, res) => {
      const reqUser = req.body
 
@@ -80,8 +77,8 @@ controller.validateUserLogin = (req, res) => {
      ).then(response => {
          //si encontro uno en la tabla de datos, creo el token de inicio de sesión del usuario 
          if (response.length !==0){
-            const idUser= response[0].id //me guardo si es administrador o no 
-            const isAdmin= response[0].isAdmin //me guardo si es administrador o no 
+            const idUser= response[0].id //guardo el id de usuario
+            const isAdmin= response[0].isAdmin //guardo si es administrador o no 
             const token = JWT.sign({
                 idUser : idUser,
                 isAdmin : isAdmin
@@ -96,40 +93,5 @@ controller.validateUserLogin = (req, res) => {
          }})
 }
  
-
-
-//---elimino un usuario----
-controller.deleteUser = (req, res) => {
-
-    const username = req.locals.decoded.username //obtengo el usuario del token
-
-    database.query( 
-        'SELECT * FROM users where username=:username',
-         {
-            type: sequelize.QueryTypes.SELECT,
-            replacements : { username: username}
-        }
-    ).then(response => {
-        //si existe ese usuario
-        if (response.length !==0){
-            database.query( 
-                'DELETE FROM users where username=:username',
-                {
-                    replacements : {
-                        username: username
-                    }
-                })
-            .then(() => res.status(200).json({
-                mensaje: 'Username sucessfully deleted',
-                deleted: username
-            })
-            ).catch(err => catchSQLError(res, err))
-        }else{
-            //no tiene nada que borrar si no existe el usuario
-            res.status(404).json({
-                mensaje: 'User does not exist o can not be found',
-                deleted: username
-            })}
-})}  
 
 module.exports = controller; 

@@ -2,7 +2,6 @@
 const controller = {}; //guardo todas las funciones a exportar en este controlador
 
 const database = require('../database/connection'); 
-const auth = require('../controllers/authorizations'); 
 /** MIDDLWARES */
 
 
@@ -18,7 +17,7 @@ const catchSQLError = (res, err) => {
 
 /** FUNCIONES */
 
-
+//----muestro productos----
 controller.showProducts = (req, res) => {
     database.query( 
         'SELECT * FROM products',
@@ -36,21 +35,7 @@ controller.showProducts = (req, res) => {
 }
 
 
-controller.showSingleProduct = (req, res) => {
-    database.query( 
-        'SELECT * FROM products',
-         {
-            type: sequelize.QueryTypes.SELECT
-        }
-    ).then(rta => {
-            res.status(200).json({
-            response: {
-                    message: 'Prodcuts shown succesfully',
-            }
-            });
-    }).catch(error => catchSQLError(res, error))
-}
-
+//----creo 1 producto----
 controller.createProduct = (req, res) => {
     const newProduct = req.body
 
@@ -63,7 +48,7 @@ controller.createProduct = (req, res) => {
             }
         }
     ).then(response => {
-        //valido que no exista ya ese
+        //valido que no exista ya un producto con ese nombre
         if (response.length !==0){
             res.status(401).json({
                 response: {
@@ -79,7 +64,6 @@ controller.createProduct = (req, res) => {
                     replacements: newProduct
                 }
             ).then (rta => {
-                console.log(rta)
                 res.status(201).json({
                     response: {
                         message: 'Product created successfully:',
@@ -92,7 +76,7 @@ controller.createProduct = (req, res) => {
 
 
 
-
+//----doy de baja/desactivo un producto----
 controller.deactivateProduct = (req, res) => {
     const id = req.params.id
 
@@ -130,7 +114,6 @@ controller.deactivateProduct = (req, res) => {
                         replacements: { isActive: 0, idProd: idProduct}
                     }
                 ).then (rta => {
-                    console.log(rta)
                     res.status(209).json({
                         response: {
                             message: 'Product desactivated',
@@ -143,7 +126,7 @@ controller.deactivateProduct = (req, res) => {
 }
 
 
-
+//----modifico un producto----
 controller.modifyProduct = (req, res) => {
     database.query( 
         'SELECT * FROM products where id=:id',
@@ -159,18 +142,20 @@ controller.modifyProduct = (req, res) => {
             res.status(404).json({
                 response: {
                     message: 'Product does not existes',
-                    user: newProduct
                 }
             });
         }else{
-            const idProduct= response[0].id //me guardo el id del producto a modificar
+            const product= response[0] //me guardo el id del producto a modificar
+            console.log(product)
             database.query(
-                'UPDATE `products` SET ........ where id = :idProd',
+                'UPDATE `products` SET name = :name, description = :description, price = :price, imageSrc = :imageSrc  where id = :id',
                 {
-                    replacements: { lpm: req.body, idProd: idProduct}
+                    replacements: {
+                        ...product,
+                        ...req.body
+                    }
                 }
             ).then (rta => {
-                console.log(rta)
                 res.status(200).json({
                     response: {
                         message: 'Product succesfully modified',

@@ -1,18 +1,18 @@
 {
 	"info": {
-		"_postman_id": "24e3c13f-85f2-45e7-b44c-6609f7232358",
-		"name": "proy3",
+		"_postman_id": "c9d3d00b-43fd-4d08-b274-3394eff89685",
+		"name": "Delilah Resto",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "login",
+			"name": "127.0.0.1:3000/users/login",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"vicky\",\n    \"password\" : \"hola\"\n}",
+					"raw": "{\n    \"username\" : \"vicky\",\n    \"password\" : \"hola123\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"mama\",\n    \"password\" : \"hola\",\n    \"fullName\" : \"virgina calvo\",\n    \"email\" : \"vir@hotmail.com\",\n    \"phoneNumber\": \"5643633\"}",
+					"raw": "{\n    \"username\" : \"virginaCalvo\",\n    \"password\" : \"hola\",\n    \"fullName\" : \"virgina calvo\",\n    \"email\" : \"vir@hotmail.com\",\n    \"address\" : \"mendoza 1000\",\n    \"phoneNumber\": \"5643633\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -68,34 +68,6 @@
 			"response": []
 		},
 		{
-			"name": "127.0.0.1:3000/users/delete",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhbnRpIiwiaXNBZG1pbiI6MCwiaWF0IjoxNTkyNDQ0ODU4fQ.p3ypC5nmJKDflkb1haqYUy6Dx_WP-GsxlHXReQbU4SU",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "127.0.0.1:3000/users/delete",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "3000",
-					"path": [
-						"users",
-						"delete"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "127.0.0.1:3000/products",
 			"request": {
 				"auth": {
@@ -112,13 +84,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhcGEiLCJpc0FkbWluIjowLCJpYXQiOjE1OTI1MzA0MTZ9.zQlz5QZHIf0wmj44lPMjYh9VDwm5ccGYmjJl7dl_qBs",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOjEsImlzQWRtaW4iOjEsImlhdCI6MTU5NDY5NTMzOX0.SqQpuAUWfbSdac7LVm9LqQspW8HQ_11V2nxey0lMQrc",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\" : \"queso\",\n    \"description\" : \"patron santiago\",\n    \"price\" : 1000,\n    \"imageSrc\" : \"hola.com\"\n}\n\n",
+					"raw": "{\n    \"name\" : \"vino\",\n    \"description\" : \"patron santiago\",\n    \"price\" : 1000,\n    \"imageSrc\" : \"www.vinosdelmundo.com\"\n}\n\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -154,7 +126,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\" : 2,\n    \"name\" : \"queso\",\n    \"description\" : \"patron santiago\",\n    \"price\" : 10\n}\n\n",
+					"raw": "{\n    \"description\" : \"coca cola 2.5 litros\",\n    \"price\" : 220\n}\n\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -162,7 +134,7 @@
 					}
 				},
 				"url": {
-					"raw": "127.0.0.1:3000/products/:id",
+					"raw": "127.0.0.1:3000/products/2",
 					"host": [
 						"127",
 						"0",
@@ -172,14 +144,7 @@
 					"port": "3000",
 					"path": [
 						"products",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1",
-							"type": "string"
-						}
+						"2"
 					]
 				}
 			},
@@ -188,7 +153,7 @@
 		{
 			"name": "127.0.0.1:3000/products/:id",
 			"request": {
-				"method": "PATCH",
+				"method": "DELETE",
 				"header": [
 					{
 						"key": "Authorization",
@@ -196,8 +161,12 @@
 						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "127.0.0.1:3000/products/:id",
+					"raw": "127.0.0.1:3000/products/1",
 					"host": [
 						"127",
 						"0",
@@ -207,13 +176,7 @@
 					"port": "3000",
 					"path": [
 						"products",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": "1"
-						}
+						"1"
 					]
 				}
 			},
@@ -226,13 +189,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InZpY2t5IiwiaXNBZG1pbiI6MSwiaWF0IjoxNTkzMTc3MzkwfQ.84Pvz2RQ3e-kn7usFriSUpZ5G1eFZVc_r16GzfGxVwA",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOjEsImlzQWRtaW4iOjEsImlhdCI6MTU5NDIxMzAxNn0.CI1fDeka-0El94r3nwjAvgJlS-o3sdysx9bB7QEHSV4",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": 10,\n    \"username\" : \"santi\",\n    \"state\" : \"nuevo\",\n    \"timeCreated\" : \"18:00:00\",\n    \"description\" : \"[{'name': 'gaseosa', 'quantity': '10'},{'name': 'panchos', 'quantity': '2'} ]\",\n    \"paymentMethod\" : \"efectivo\",\n    \"paymentValue\" : 1000\n}",
+					"raw": "{\n    \"products\" : [            \n            {\n                \"id\": 1,\n                \"productAmount\": 2\n            },\n            {\n                \"id\": 2,\n                \"productAmount\": 1\n            }]\n    ,\n    \"paymentMethod\" : \"efectivo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -268,7 +231,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"state\" : \"procesando\"\n}",
+					"raw": "{\n    \"state\" : \"entregado\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -321,6 +284,68 @@
 					"port": "3000",
 					"path": [
 						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "127.0.0.1:3000/orders/3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOjIsImlzQWRtaW4iOjAsImlhdCI6MTU5NDY5MzQ5OX0.1lmOSyVAoMTCW8UbYAiLKZyo4_MYk6uAs5w7eRSja9M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "127.0.0.1:3000/orders/3",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"orders",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "127.0.0.1:3000/products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzZXIiOjEsImlzQWRtaW4iOjEsImlhdCI6MTU5NDY5NTQ1NH0.4P7ndbE3JKr-7NWscMVQsNaR7R6KHtv7vqFB7SMWc7o",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "127.0.0.1:3000/products",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"products"
 					]
 				}
 			},
