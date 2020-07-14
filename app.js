@@ -4,8 +4,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-
-
 /** MIDDLEWARES */
 // BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,12 +27,10 @@ const productsRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 
 
-
 // ROUTES
-app.use('/users', userRoutes); // /users es el comun a todas por el q use router
+app.use('/users', userRoutes); 
 app.use('/products', productsRoutes);
 app.use('/orders', orderRoutes);
-
 
 
 //SERVIDOR
