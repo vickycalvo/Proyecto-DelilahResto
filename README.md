@@ -27,7 +27,7 @@ npm start
 ```
 
 # Endpoints 
-The endpoints are detailed in this YALM file (./swaggerP3.yml) and they were designed following the OPEN API specifications. Import the file into the Swagger Editor (https://editor.swagger.io/#) for a better understanding of thte API endopoints. 
+The endpoints are detailed in this YALM file (../documentation/swagger.yml) and they were designed following the OPEN API specifications. Import the file into the Swagger Editor (https://editor.swagger.io/#) for a better understanding of thte API endopoints. 
 
 # Endpoints Testing
-By importing the following file (./proy3.postman_collection.json) in Postman aplication you will be able to test all the endopoints. (Remember that some require role validation so you will have to include the correspondant token in the header authorization). 
+By importing the following file (../documentation/Delilah Resto.postman_collection.json) in Postman aplication you will be able to test all the endopoints. (Remember that some require role validation so you will have to include the correspondant token in the header authorization). 
