@@ -220,4 +220,39 @@ const getWhereClause = (conditions) => {
         return '';
     }
 }
+
+
+//borra un pedido de la tabla de pedidos
+controller.deleteOrder = (req, res) => {
+
+    const order = req.params.id
+
+    database.query( 
+        'SELECT * FROM orders where id=:id',
+         {
+            type: sequelize.QueryTypes.SELECT,
+            replacements : { id: order}
+        }
+    ).then(response => {
+        //si existe esa order
+        if (response.length !==0){
+            database.query( 
+                'DELETE FROM orders where id=:id',
+                {
+                    replacements : {
+                        id: order
+                    }
+                })
+            .then(() => res.status(200).json({
+                mensaje: 'Order sucessfully deleted',
+                Deleted: order
+            })
+            ).catch(err => catchSQLError(res, err))
+        }else{
+            res.status(404).json({
+                mensaje: 'Order does not exist o can not be found',
+            })}
+})
+}
+
 module.exports = controller;
